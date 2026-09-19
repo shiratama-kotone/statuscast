@@ -18,10 +18,23 @@
 - `GET /status` : 最新の状態をJSONで返す(誰でもアクセス可、CORS許可済み)
   ```json
   {
-    "app": "com.example.app",
-    "music": { "title": "曲名", "artist": "アーティスト名" },
+    "app": {
+      "package": "com.example.app",
+      "name": "アプリ名",
+      "icon": "iVBORw0KGgoAAAANSUhEUgAA..."
+    },
+    "music": {
+      "title": "曲名",
+      "artist": "アーティスト名",
+      "positionMs": 45000,
+      "durationMs": 210000
+    },
     "timestamp": 1234567890123
   }
+  ```
+  `app.icon` はPNG画像をBase64化した文字列です。HTMLでは以下のように直接表示できます。
+  ```html
+  <img src="data:image/png;base64,ここにicon の値" />
   ```
 
 ## 注意

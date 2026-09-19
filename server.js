@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-app.use(express.json());
+// アイコン画像(Base64)を含むためボディサイズの上限を広げる
+app.use(express.json({ limit: '5mb' }));
 
 // GETはHTMLから直接fetchできるよう誰でもアクセス可能にする
 app.use(cors());
@@ -12,8 +13,8 @@ app.use(cors());
 const SHARED_SECRET = process.env.SHARED_SECRET || 'CHANGE_ME_SECRET';
 
 let latestStatus = {
-  app: null,
-  music: { title: null, artist: null },
+  app: { package: null, name: null, icon: null },
+  music: { title: null, artist: null, positionMs: null, durationMs: null },
   timestamp: null,
 };
 
@@ -25,10 +26,17 @@ app.post('/update', (req, res) => {
   }
 
   latestStatus = {
-    app: foregroundApp ?? null,
+    app: {
+      package: foregroundApp?.package ?? null,
+      name: foregroundApp?.name ?? null,
+      // iconはPNG画像のBase64文字列。<img src="data:image/png;base64,...">でそのまま表示可能
+      icon: foregroundApp?.icon ?? null,
+    },
     music: {
       title: music?.title ?? null,
       artist: music?.artist ?? null,
+      positionMs: music?.positionMs ?? null,
+      durationMs: music?.durationMs ?? null,
     },
     timestamp: timestamp ?? Date.now(),
   };
